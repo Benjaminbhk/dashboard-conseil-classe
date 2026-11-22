@@ -1,0 +1,15 @@
+# Données d'élèves : ne JAMAIS les committer
+*.xlsx
+*.xls
+*.csv
+*.pdf
+*.json
+!package.json
+donnees/
+data/
+photos/
+*.png
+*.jpg
+*.jpeg
+!docs/*.png
+.DS_Store
