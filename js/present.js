@@ -168,10 +168,9 @@ window.App = window.App || {};
       <section class="droite">
         <div class="bloc-d"><h3>Mots-clés des appréciations</h3>${zoneMots(e)}</div>
         <div class="bloc-d" style="flex:1"><h3>Appréciations du 1er trimestre</h3>${appr2}</div>
-        <div class="bloc-d"><h3>Assiduité au 1er trimestre</h3>${assiduite(e)}</div>
+        <div class="bloc-d assid-bloc"><div><h3>Assiduité au 1er trimestre</h3>${assiduite(e)}</div>${logoCoin(meta)}</div>
       </section>
     </main>
-    ${logoCoin(meta)}
     <div class="nav">${pos}</div>`;
   };
 

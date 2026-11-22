@@ -63,4 +63,5 @@ svg text{font-family:inherit}
 .kpi{flex-shrink:0}.kpi .lab,.kpi .cl{white-space:nowrap}.ident{min-width:0}
 .photo,.logo,.logo-vide{flex-shrink:0}
 .photo-vide{display:flex;align-items:center;justify-content:center;background:#eef0f3;color:#9aa0aa;font-size:56px;font-weight:700;box-shadow:none;border:none}
-.logo-coin{position:absolute;right:60px;bottom:22px;height:72px;max-width:220px;object-fit:contain}
+.assid-bloc{display:flex;align-items:flex-end;gap:28px}.assid-bloc>div{flex:1;min-width:0}
+.logo-coin{height:72px;max-width:220px;object-fit:contain;flex-shrink:0}
