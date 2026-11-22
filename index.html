@@ -4,14 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Conseil de classe</title>
-<link rel="stylesheet" href="css/present.css?v=20261122p">
-<link rel="stylesheet" href="css/admin.css?v=20261122p">
+<link rel="stylesheet" href="css/present.css?v=20261122q">
+<link rel="stylesheet" href="css/admin.css?v=20261122q">
 </head>
 <body>
 <!-- Mode administration -->
 <div id="admin">
   <div class="barre">
-    <div class="titre">Conseil de classe <span id="meta-titre"></span><small class="version">version du 22/11, 14 h 15</small></div>
+    <div class="titre">Conseil de classe <span id="meta-titre"></span><small class="version">version du 22/11, 14 h 25</small></div>
     <div class="actions">
       <label class="btn">Importer le classeur (.xlsx)<input type="file" id="f-xlsx" accept=".xlsx" hidden></label>
       <label class="btn sec">Logo<input type="file" id="f-logo" accept="image/*" hidden></label>
@@ -45,8 +45,8 @@
         <a id="lien-extracteur" class="btn sec petit" href="#">📋 Extraire Pronote</a>
         <small>(si la barre est masquée : Ctrl+Maj+B, ou Cmd+Maj+B sur Mac)</small></p>
       <ol class="aide">
-        <li>Dans Pronote : <b>Bulletins → Bulletin</b>, choisis la classe et le trimestre.</li>
-        <li>Clique sur le favori <b>📋 Extraire Pronote</b>. Il passe tout seul d'un élève à l'autre (environ 1 minute), sans rien modifier.</li>
+        <li>Dans Pronote : <b>Bulletins → Bulletin</b> (notes, appréciations, absences) ou <b>Trombinoscope</b> (photos des élèves), puis choisis la classe et le trimestre.</li>
+        <li>Clique sur le favori <b>📋 Extraire Pronote</b>. Sur le bulletin, il passe tout seul d'un élève à l'autre (environ 1 minute) ; sur le trombinoscope, il prend les photos en quelques secondes. Il ne modifie rien. Le logo du lycée est récupéré au passage.</li>
         <li>Copie le texte qui s'affiche, puis colle-le ci-dessous.</li>
       </ol>
       <p class="aide"><small>Si le favori ne fait rien : <button class="lienbtn" id="b-copier-script">copier le script</button>, puis dans Pronote ouvre la console (F12 → Console), colle et appuie sur Entrée.</small></p>
@@ -62,13 +62,13 @@
   <div id="liste"><div></div></div>
 </div>
 
-<script src="vendor/xlsx.core.min.js?v=20261122p"></script>
-<script src="js/config.js?v=20261122p"></script>
-<script src="js/import-xlsx.js?v=20261122p"></script>
-<script src="js/model.js?v=20261122p"></script>
-<script src="js/store.js?v=20261122p"></script>
-<script src="js/present.js?v=20261122p"></script>
-<script src="js/pronote.js?v=20261122p"></script>
-<script src="js/app.js?v=20261122p"></script>
+<script src="vendor/xlsx.core.min.js?v=20261122q"></script>
+<script src="js/config.js?v=20261122q"></script>
+<script src="js/import-xlsx.js?v=20261122q"></script>
+<script src="js/model.js?v=20261122q"></script>
+<script src="js/store.js?v=20261122q"></script>
+<script src="js/present.js?v=20261122q"></script>
+<script src="js/pronote.js?v=20261122q"></script>
+<script src="js/app.js?v=20261122q"></script>
 </body>
 </html>

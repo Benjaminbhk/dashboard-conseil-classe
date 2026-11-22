@@ -44,10 +44,56 @@ App.extracteurPronote = async function () {
     return { notes, appr, vie: vs.slice(1, ig >= 0 ? Math.min(ig, 5) : 4).join(" · "), globale: ig >= 0 ? vs.slice(ig + 1).join(" ").trim() : "" };
   }
 
+  // image du même site -> data URL (réduite), pour le logo et les photos
+  // les photos hors écran ne sont pas encore chargées (image de remplacement) : on les charge depuis data-src
+  const charger = img => new Promise(r => {
+    const ds = img.dataset && img.dataset.src;
+    setTimeout(() => r(null), 8000);
+    if (ds && img.getAttribute("src") !== ds) { const i = new Image(); i.onload = () => r(i); i.onerror = () => r(null); i.src = ds; }
+    else if (img.complete && img.naturalWidth > 1) r(img);
+    else { img.addEventListener("load", () => r(img)); img.addEventListener("error", () => r(null)); }
+  });
+  const enDataURL = async (img0, maxPx, type) => {
+    const img = await charger(img0);
+    if (!img || img.naturalWidth <= 1) return null;
+    const k = Math.min(1, maxPx / Math.max(img.naturalWidth, img.naturalHeight));
+    const c = document.createElement("canvas"); c.width = Math.round(img.naturalWidth * k); c.height = Math.round(img.naturalHeight * k);
+    c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+    try { return c.toDataURL(type || "image/jpeg", 0.85); } catch (e) { return null; }
+  };
+  const logoImg = document.querySelector('img[alt*="Logo"]');
+  const logo = logoImg ? await enDataURL(logoImg, 600, "image/png") : null;
+  function afficher(res, resume) {
+    const json = JSON.stringify(res);
+    const box = document.createElement("div");
+    box.style.cssText = "position:fixed;inset:5%;z-index:99999;background:#fff;border:3px solid #1f4fd1;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px;font:15px sans-serif;box-shadow:0 10px 40px rgba(0,0,0,.4)";
+    box.innerHTML = `<b></b><span>Copie ce texte (il est déjà sélectionné : Ctrl+C ou Cmd+C), puis colle-le dans l'appli avec « Coller depuis Pronote ».</span>
+      <textarea style="flex:1;font:12px monospace" readonly></textarea><button style="padding:8px;font:inherit">Fermer</button>`;
+    box.querySelector("b").textContent = resume;
+    document.body.appendChild(box);
+    const ta = box.querySelector("textarea"); ta.value = json; ta.focus(); ta.select();
+    navigator.clipboard.writeText(json).then(() => { box.querySelector("span").textContent = "Copié dans le presse-papiers. Colle-le dans l'appli avec « Coller depuis Pronote »."; }, () => {});
+    box.querySelector("button").onclick = () => box.remove();
+  }
+
+  // Page « Trombinoscope » : on récupère les photos de la classe affichée
+  const portraits = [...document.querySelectorAll("img.img-portrait")];
+  if (portraits.length) {
+    const photos = {};
+    for (const img of portraits) {
+      const n = (img.alt || "").replace(/^Photo de\s*/i, "").trim();
+      const d = n && await enDataURL(img, 300);
+      if (d) photos[n] = d;
+    }
+    const res = { source: "pronote-trombi", extrait_le: new Date().toISOString(), logo, photos };
+    afficher(res, `${Object.keys(photos).length} photos récupérées.`);
+    return;
+  }
+
   const c0 = combos();
   const periode = c0.find(v => /Trimestre|Semestre/.test(v)) || "";
-  if (!suivant()) { alert("Ouvre d'abord Bulletins → Bulletin, choisis la classe et le trimestre, puis relance."); return; }
-  const res = { source: "pronote-bulletin", classe: c0[0] || "", periode, extrait_le: new Date().toISOString(), eleves: {} };
+  if (!suivant()) { alert("Ouvre d'abord Bulletins → Bulletin (pour les notes et appréciations) ou Trombinoscope (pour les photos), choisis la classe, puis relance."); return; }
+  const res = { source: "pronote-bulletin", classe: c0[0] || "", periode, extrait_le: new Date().toISOString(), logo, eleves: {} };
   if (/De la classe/.test(nom())) { const n = nom(); appuyer(suivant()); await attendreChangement(n); }
   for (let i = 0; i < 60; i++) {
     await sleep(1200);
@@ -58,17 +104,7 @@ App.extracteurPronote = async function () {
     appuyer(b);
     if (!(await attendreChangement(n))) break;
   }
-  // affichage du résultat à copier
-  const json = JSON.stringify(res);
-  const box = document.createElement("div");
-  box.style.cssText = "position:fixed;inset:5%;z-index:99999;background:#fff;border:3px solid #1f4fd1;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px;font:15px sans-serif;box-shadow:0 10px 40px rgba(0,0,0,.4)";
-  box.innerHTML = `<b>${Object.keys(res.eleves).length} élèves extraits (${res.classe}, ${res.periode}).</b>
-    <span>Copie ce texte (il est déjà sélectionné : Ctrl+C ou Cmd+C), puis colle-le dans l'appli avec « Coller depuis Pronote ».</span>
-    <textarea style="flex:1;font:12px monospace" readonly></textarea><button style="padding:8px;font:inherit">Fermer</button>`;
-  document.body.appendChild(box);
-  const ta = box.querySelector("textarea"); ta.value = json; ta.focus(); ta.select();
-  try { await navigator.clipboard.writeText(json); box.querySelector("span").textContent = "Copié dans le presse-papiers. Colle-le dans l'appli avec « Coller depuis Pronote »."; } catch (e) {}
-  box.querySelector("button").onclick = () => box.remove();
+  afficher(res, `${Object.keys(res.eleves).length} élèves extraits (${res.classe}, ${res.periode}).`);
 };
 
 // lien « favori » à glisser dans la barre de favoris
@@ -80,12 +116,17 @@ App.lienExtracteur = () => "javascript:(" + encodeURIComponent(App.extracteurPro
 App.importerPronote = function (data, texte) {
   let obj;
   try { obj = JSON.parse(texte.trim()); } catch (e) { throw new Error("le texte collé n'est pas celui produit par l'extracteur"); }
-  if (obj.source !== "pronote-bulletin" || !obj.eleves) throw new Error("le texte collé n'est pas celui produit par l'extracteur");
+  if (!["pronote-bulletin", "pronote-trombi"].includes(obj.source)) throw new Error("le texte collé n'est pas celui produit par l'extracteur");
+  if (obj.logo) data.meta.logo = obj.logo;
   const norm = s => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toUpperCase().replace(/[^A-Z ]/g, " ").replace(/\s+/g, " ").trim();
   let ok = 0; const inconnus = [];
-  for (const [nomP, x] of Object.entries(obj.eleves)) {
-    const k = norm(nomP);
-    const e = data.eleves.find(e => k === norm(e.nom + " " + e.prenom) || k.startsWith(norm(e.nom + " " + e.prenom) + " "));
+  const trouver = nomP => { const k = norm(nomP); return data.eleves.find(e => k === norm(e.nom + " " + e.prenom) || k.startsWith(norm(e.nom + " " + e.prenom) + " ")); };
+  if (obj.source === "pronote-trombi") {
+    for (const [nomP, photo] of Object.entries(obj.photos || {})) { const e = trouver(nomP); if (e) { e.photo = photo; ok++; } else inconnus.push(nomP); }
+    return { ok, inconnus, photos: true };
+  }
+  for (const [nomP, x] of Object.entries(obj.eleves || {})) {
+    const e = trouver(nomP);
     if (!e) { inconnus.push(nomP); continue; }
     for (const [m, v] of Object.entries(x.notes || {})) e.notes2[m] = App.num(v);
     e.appr2 = x.appr || [];

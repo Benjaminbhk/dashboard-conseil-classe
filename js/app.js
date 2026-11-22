@@ -202,7 +202,7 @@
       const r = App.importerPronote(DATA, $("#ta-pronote").value);
       await sauver(); renderAdmin();
       $("#modal-pronote").hidden = true; $("#ta-pronote").value = "";
-      toast(`${r.ok} élève(s) mis à jour depuis Pronote` + (r.inconnus.length ? ` · non reconnus : ${r.inconnus.join(", ")}` : ""));
+      toast(`${r.ok} ${r.photos ? "photo(s) ajoutée(s)" : "élève(s) mis à jour"} depuis Pronote` + (r.inconnus.length ? ` · non reconnus : ${r.inconnus.join(", ")}` : ""));
     } catch (err) { toast("Impossible : " + err.message); }
   };
 
