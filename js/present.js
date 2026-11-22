@@ -70,16 +70,17 @@ window.App = window.App || {};
   // T1 de 2nde : récapitulatif des absences du classeur (avec ses dates), sinon texte « Vie scolaire » du bulletin Pronote
   function assiduite(e) {
     const n = x => x == null || x === "" ? 0 : parseFloat(String(x).replace(",", ".")) || 0;
-    let d, nj = 0, ret, per = "", brut = "";
+    let d, nj = 0, just = null, ret, per = "", brut = "";
     if (e.abs2) {
       const a = e.abs2; d = n(a.demi_journees); nj = n(a.non_just); ret = n(a.retards);
+      just = a.just != null && a.just !== "" ? n(a.just) : Math.max(0, d - nj);
       const court = x => String(x || "").replace(/\/20\d\d/, "");
       if (a.du && a.au) per = `du ${court(a.du)} au ${court(a.au)}`;
     } else if (e.vie2) { d = lireAbs(e.vie2); ret = lireRet(e.vie2); brut = e.vie2; per = "bulletin T1"; }
     if (d == null && ret == null) return `<div class="assid">${esc(brut || "Pas de récapitulatif d'absences.")}</div>`;
     d = d == null ? null : Math.round(d);
     const alerte = d != null && d > SEUIL_ABS;
-    const txt = d == null ? "" : d === 0 ? "Aucune absence" : `<b>${d}</b> demi-journée${d > 1 ? "s" : ""} d'absence${nj ? ` dont ${nj} non justifiée${nj > 1 ? "s" : ""}` : ""}`;
+    const txt = d == null ? "" : d === 0 ? "Aucune absence" : `<b>${d}</b> demi-journée${d > 1 ? "s" : ""} d'absence${just != null ? ` (${just} justifiée${just > 1 ? "s" : ""}, ${nj} non justifiée${nj > 1 ? "s" : ""})` : nj ? ` dont ${nj} non justifiée${nj > 1 ? "s" : ""}` : ""}`;
     const r = ret == null ? "" : ret === 0 ? "aucun retard" : `<b>${ret}</b> retard${ret > 1 ? "s" : ""}`;
     return `<div class="assid${alerte ? " alerte" : ""}">${[txt, r].filter(Boolean).join(", ")}${per ? ` <span class="per">(${esc(per)})</span>` : ""}</div>`;
   }
@@ -107,7 +108,7 @@ window.App = window.App || {};
       if (isP) blocs[r.p].hp = h;
       body += `<text x="${isP ? 24 : labW}" y="${cy + 9}" font-size="${isP ? 23 : 27}" font-weight="${isP ? 800 : 500}" fill="${isP ? `var(--${r.p}-k)` : "#2a2d33"}" text-anchor="${isP ? "start" : "end"}">${esc(isP ? r.m.toUpperCase() : r.m)}</text>`;
       if (r.mc != null) body += `<line x1="${X(r.mc)}" x2="${X(r.mc)}" y1="${cy - (isP ? 20 : 16)}" y2="${cy + (isP ? 20 : 16)}" stroke="var(--moy)" stroke-width="${isP ? 4 : 3}" stroke-linecap="round"><title>moyenne de la classe : ${fr(r.mc)}</title></line>`;
-      body += point(X, cy, r.v, isP ? 15 : 12, `var(--${r.p}-${isP ? "f" : "k"})`);
+      body += point(X, cy, r.v, isP ? 15 : 12, isP ? "var(--pt-pole)" : "var(--pt)");
       body += `<text x="${W - dW - 14}" y="${cy + 11}" font-size="${isP ? 36 : 31}" font-weight="${isP ? 800 : 600}" fill="#16181d" text-anchor="end">${fr(r.v)}</text>`;
       if (r.v3 != null) {
         const d = r.v - r.v3, big = Math.abs(d) >= 1.5;
@@ -151,8 +152,8 @@ window.App = window.App || {};
     <main>
       <section class="gauche">
         <div class="legende">
-          <span><svg width="30" height="30"><circle cx="15" cy="15" r="13" fill="var(--sci-f)"/></svg>moyenne du pôle (T1)</span>
-          <span><svg width="30" height="30"><circle cx="15" cy="15" r="11" fill="var(--sci-k)"/></svg>matière (T1)</span>
+          <span><svg width="30" height="30"><circle cx="15" cy="15" r="13" fill="var(--pt-pole)"/></svg>moyenne du pôle (T1)</span>
+          <span><svg width="30" height="30"><circle cx="15" cy="15" r="11" fill="var(--pt)"/></svg>matière (T1)</span>
           <span><svg width="14" height="34"><line x1="7" x2="7" y1="3" y2="31" stroke="var(--moy)" stroke-width="4" stroke-linecap="round"/></svg>moyenne de la classe</span>
         </div>
         ${graphe(e)}

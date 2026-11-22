@@ -64,7 +64,7 @@ App.importXlsx = function (arrayBuffer, periode) {
   const classe3 = by("H3_bull_entetes", () => true, "eleve_id_local", r => r.classe_3e_imprimee);
   const abs3 = by("H3_bull_mentions", r => r.type_document === "bilan_periodique" && r.type_mention === "absences_retards_imprime", "eleve_id_local", r => r.texte_brut);
   const abs2 = by("2A_absences", r => r.ligne_type === "eleve", "eleve_id_local", r => ({
-    demi_journees: clean(r.total_demi_journees_brut), non_just: clean(r.demi_journees_non_justifiees_brut),
+    demi_journees: clean(r.total_demi_journees_brut), non_just: clean(r.demi_journees_non_justifiees_brut), just: clean(r.demi_journees_justifiees_brut),
     retards: clean(r.retards_nb_brut), du: r.periode_debut_brute || "", au: r.periode_fin_brute || "",
   }));
 
