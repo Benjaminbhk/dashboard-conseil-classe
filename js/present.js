@@ -88,7 +88,8 @@ window.App = window.App || {};
     const rows = [];
     e.poles.forEach(p => {
       rows.push({ kind: "pole", p: p.p, m: p.nom, v: p.v, v3: p.v3, mc: p.mc });
-      e.lignes.filter(l => l.pole === p.p).forEach(l => rows.push({ kind: "mat", p: p.p, m: l.m, v: l.v, v3: l.v3, mc: l.mc }));
+      const mats = e.lignes.filter(l => l.pole === p.p);
+      if (!(mats.length === 1 && mats[0].m === p.nom)) mats.forEach(l => rows.push({ kind: "mat", p: p.p, m: l.m, v: l.v, v3: l.v3, mc: l.mc }));
     });
     const n = rows.length, nP = e.poles.length;
     const avail = 690, gapPole = 14, top = 40;

@@ -6,6 +6,7 @@ App.POLES = [
   { id: "sci", nom: "Pôle scientifique" },
   { id: "lit", nom: "Pôle humanités" },
   { id: "lv",  nom: "Langues vivantes" },
+  { id: "eps", nom: "EPS" },
   { id: "sec", nom: "Sections et options" },
 ];
 
@@ -29,7 +30,7 @@ App.MATIERES = [
   ["Arts Plastiques", "Arts plastiques", "Arts Plastiques", "sec"],
   ["Brevet d'initiation aéronautique", "BIA", null, "sec"],
   ["EMC", "EMC", "EMC", null],
-  ["Education Physique et Sportive", "EPS", "Education Physique et Sportive", null],
+  ["Education Physique et Sportive", "EPS", "Education Physique et Sportive", "eps"],
 ];
 
 // pôles des matières de 3e (pour les moyennes de pôle de 3e)
@@ -37,6 +38,7 @@ App.POLE_3E = {
   "Mathématiques": "sci", "Physique-Chimie": "sci", "Sc.de la Vie et de la Terre": "sci", "Technologie": "sci",
   "Français": "lit", "HISTOIRE GEOGRAPHIE": "lit",
   "Anglais": "lv", "Espagnol": "lv", "Mandarin": "lv", "Allemand": "lv", "LVB RUSSE CNED": "lv",
+  "Education Physique et Sportive": "eps",
 };
 
 App.matiere = function (m) {
