@@ -107,7 +107,7 @@ window.App = window.App || {};
       if (isP) blocs[r.p].hp = h;
       body += `<text x="${isP ? 24 : labW}" y="${cy + 9}" font-size="${isP ? 23 : 27}" font-weight="${isP ? 800 : 500}" fill="${isP ? `var(--${r.p}-k)` : "#2a2d33"}" text-anchor="${isP ? "start" : "end"}">${esc(isP ? r.m.toUpperCase() : r.m)}</text>`;
       if (r.mc != null) body += `<line x1="${X(r.mc)}" x2="${X(r.mc)}" y1="${cy - (isP ? 20 : 16)}" y2="${cy + (isP ? 20 : 16)}" stroke="var(--moy)" stroke-width="${isP ? 4 : 3}" stroke-linecap="round"><title>moyenne de la classe : ${fr(r.mc)}</title></line>`;
-      body += point(X, cy, r.v, isP ? 15 : 12, `var(--${r.p}-${isP ? "f" : "p"})`);
+      body += point(X, cy, r.v, isP ? 15 : 12, `var(--${r.p}-${isP ? "f" : "k"})`);
       body += `<text x="${W - dW - 14}" y="${cy + 11}" font-size="${isP ? 36 : 31}" font-weight="${isP ? 800 : 600}" fill="#16181d" text-anchor="end">${fr(r.v)}</text>`;
       if (r.v3 != null) {
         const d = r.v - r.v3, big = Math.abs(d) >= 1.5;
@@ -146,13 +146,13 @@ window.App = window.App || {};
     stage.innerHTML = `
     <header>
       <div class="ident">${logoHTML(meta)}${e.photo ? `<img class="photo" src="${e.photo}" alt="">` : ""}<div><div class="nom">${esc(e.prenom)} <small>${esc(e.nom)}</small></div><div class="sous">${esc(sous)}</div></div></div>
-      <div class="kpi">${evo}<div class="bloc"><div class="lab">moyenne T1</div><div class="val">${fr(e.gen)}</div></div>${e.genHO != null && e.genHO !== e.gen ? `<div class="bloc ho"><div class="lab">hors options,<br>sections et LVC</div><div class="v3">${fr(e.genHO)}</div><div class="cl">classe : ${fr(M.classe.moyHO)}</div></div>` : ""}</div>
+      <div class="kpi">${evo}<div class="bloc"><div class="lab">moyenne T1</div><div class="val">${fr(e.gen)}</div></div>${e.genHO != null ? `<div class="bloc ho"><div class="lab">hors options,<br>sections et LVC</div><div class="v3">${fr(e.genHO)}</div><div class="cl">classe : ${fr(M.classe.moyHO)}</div></div>` : ""}</div>
     </header>
     <main>
       <section class="gauche">
         <div class="legende">
           <span><svg width="30" height="30"><circle cx="15" cy="15" r="13" fill="var(--sci-f)"/></svg>moyenne du pôle (T1)</span>
-          <span><svg width="30" height="30"><circle cx="15" cy="15" r="11" fill="var(--sci-p)"/></svg>matière (T1)</span>
+          <span><svg width="30" height="30"><circle cx="15" cy="15" r="11" fill="var(--sci-k)"/></svg>matière (T1)</span>
           <span><svg width="14" height="34"><line x1="7" x2="7" y1="3" y2="31" stroke="var(--moy)" stroke-width="4" stroke-linecap="round"/></svg>moyenne de la classe</span>
         </div>
         ${graphe(e)}
@@ -189,7 +189,7 @@ window.App = window.App || {};
     stage.innerHTML = `
     <header>
       <div class="ident">${logoHTML(meta)}<div><div class="nom">${esc(meta.classe)}</div><div class="sous">${esc(meta.periode)} · ${esc(meta.annee)} · ${M.eleves.filter(e => e.gen != null).length} élèves · vue d'ensemble</div></div></div>
-      <div class="kpi"><div class="bloc"><div class="lab">moyenne de classe</div><div class="val">${fr(C.moy)}</div></div>${C.moyHO != null && C.moyHO !== C.moy ? `<div class="bloc ho"><div class="lab">hors options,<br>sections et LVC</div><div class="v3">${fr(C.moyHO)}</div></div>` : ""}</div>
+      <div class="kpi"><div class="bloc"><div class="lab">moyenne de classe</div><div class="val">${fr(C.moy)}</div></div>${C.moyHO != null ? `<div class="bloc ho"><div class="lab">hors options,<br>sections et LVC</div><div class="v3">${fr(C.moyHO)}</div></div>` : ""}</div>
     </header>
     <main><section class="gauche">
       <div class="legende"><span><svg width="22" height="22"><circle cx="11" cy="11" r="7" fill="#b7bdc7"/></svg>un élève</span><span><svg width="14" height="34"><line x1="7" x2="7" y1="3" y2="31" stroke="var(--ink)" stroke-width="4" stroke-linecap="round"/></svg>moyenne de la classe</span></div>
