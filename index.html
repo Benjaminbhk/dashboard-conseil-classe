@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Conseil de classe</title>
+<link rel="stylesheet" href="css/present.css">
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+<!-- Mode administration -->
+<div id="admin">
+  <div class="barre">
+    <div class="titre">Conseil de classe <span id="meta-titre"></span></div>
+    <div class="actions">
+      <label class="btn">Importer le classeur (.xlsx)<input type="file" id="f-xlsx" accept=".xlsx" hidden></label>
+      <label class="btn sec">Logo<input type="file" id="f-logo" accept="image/*" hidden></label>
+      <button class="btn sec" id="b-export">Sauvegarder (.json)</button>
+      <label class="btn sec">Restaurer / synthèses<input type="file" id="f-json" accept=".json" hidden></label>
+      <button class="btn go" id="b-present">▶ Présenter</button>
+    </div>
+  </div>
+  <div id="vide" class="vide">
+    <h1>Aucune donnée pour l'instant</h1>
+    <p>Glisse ici le classeur « Suivi des élèves » (.xlsx), ou clique sur « Importer le classeur ».<br>
+    Les données restent dans ce navigateur, sur cet ordinateur : rien n'est envoyé sur Internet.</p>
+  </div>
+  <div id="contenu" hidden>
+    <div class="col-g">
+      <h2>Moyennes du trimestre <small>cliquer pour corriger · les cases modifiées à la main sont en jaune</small></h2>
+      <div class="tableau-wrap"><table id="tableau"></table></div>
+    </div>
+    <div class="col-d">
+      <div class="apercu-wrap"><div id="apercu-scale"><div id="apercu" class="stage-like"></div></div></div>
+      <div id="editeur"></div>
+    </div>
+  </div>
+  <div id="toast"></div>
+</div>
+
+<!-- Mode présentation -->
+<div id="present" hidden>
+  <div id="stage"></div>
+  <div id="liste"><div></div></div>
+</div>
+
+<script src="vendor/xlsx.core.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/import-xlsx.js"></script>
+<script src="js/model.js"></script>
+<script src="js/store.js"></script>
+<script src="js/present.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
