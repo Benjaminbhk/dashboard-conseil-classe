@@ -33,6 +33,8 @@ App.calculer = function (data) {
   const pol2 = Object.fromEntries(els.map(e => [e.id, poles2(e)]));
   const polClasse = Object.fromEntries(App.POLES.map(p => [p.id, App.mean(els.map(e => pol2[e.id][p.id]))]));
   const genClasse = Object.values(gen).filter(v => v != null);
+  // moyenne hors options et sections (pôle « sec » et matières non répertoriées)
+  const genHO = Object.fromEntries(els.map(e => [e.id, App.mean(Object.entries(n2[e.id]).filter(([m]) => App.matiere(m).pole !== "sec").map(([, v]) => v))]));
   const diff = p => (p.sci == null || p.lit == null) ? null : Math.round((p.sci - p.lit) * 100) / 100;
 
   const eleves = els.map(e => {
@@ -47,7 +49,7 @@ App.calculer = function (data) {
     const p3 = poles3(e);
     const has3 = Object.keys(e.notes3 || {}).length > 0;
     return {
-      ...e, lignes, sansNote, gen: gen[e.id],
+      ...e, lignes, sansNote, gen: gen[e.id], genHO: genHO[e.id],
       gen3: has3 ? App.mean(Object.values(e.notes3).map(x => x.annee)) : null,
       poles: App.POLES.filter(p => pol2[e.id][p.id] != null)
         .map(p => ({ p: p.id, nom: p.nom, v: pol2[e.id][p.id], v3: has3 ? p3[p.id] : null, mc: polClasse[p.id] })),
@@ -58,7 +60,7 @@ App.calculer = function (data) {
   return {
     meta: data.meta, eleves,
     classe: {
-      gen: genClasse.sort((a, b) => a - b), moy: App.mean(genClasse), poles: polClasse,
+      gen: genClasse.sort((a, b) => a - b), moy: App.mean(genClasse), moyHO: App.mean(Object.values(genHO)), poles: polClasse,
       matieres: Object.entries(classe).filter(([, v]) => v.length >= 3)
         .map(([m, v]) => ({ m: App.matiere(m).court, pole: App.matiere(m).pole || "sec", ordre: App.matiere(m).ordre, classe: v.slice().sort((a, b) => a - b), moy: App.mean(v) }))
         .sort((a, b) => a.ordre - b.ordre),

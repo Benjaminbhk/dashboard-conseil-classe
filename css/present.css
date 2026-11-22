@@ -55,3 +55,9 @@ ul.vigil li::before{content:"!";color:var(--warn);left:10px}
 .pied{font-size:18px;color:var(--ink3);margin-top:auto}
 svg text{font-family:inherit}
 .photo{height:150px;width:150px;border-radius:50%;object-fit:cover;border:4px solid #fff;box-shadow:0 0 0 2px var(--line)}
+.kpi .bloc.ho{border-left:2px solid var(--line);padding-left:22px;margin-left:4px}
+.kpi .ho .lab{font-size:16px;letter-spacing:1px;line-height:1.2}
+.kpi .ho .v3{color:var(--ink);font-size:52px;font-weight:800}
+.kpi .ho .cl{font-size:20px}
+.kpi{flex-shrink:0}.kpi .lab,.kpi .cl{white-space:nowrap}.ident{min-width:0}
+.photo,.logo,.logo-vide{flex-shrink:0}

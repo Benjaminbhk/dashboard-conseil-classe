@@ -170,6 +170,23 @@
     const f = ev.target.files[0]; if (!f || !DATA) return;
     DATA.meta.logo = await imageEnDataURL(f, 600); await sauver(); renderAdmin(); toast("Logo enregistré");
   };
+  /* Photos en lot : chaque fichier est rattaché à l'élève dont le nom et le prénom figurent dans le nom du fichier
+     (« BARDES Quentin.jpg », « quentin_bardes.png »…). Les photos restent dans le navigateur. */
+  const normNom = s => String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().replace(/[^A-Z]+/g, " ").trim();
+  async function importerPhotos(files) {
+    if (!DATA) { toast("Importe d'abord le classeur"); return; }
+    let ok = 0; const inconnus = [];
+    for (const f of files) {
+      const mots = new Set(normNom(f.name.replace(/\.[^.]+$/, "")).split(" "));
+      const cand = DATA.eleves.filter(e => normNom(e.nom).split(" ").every(w => mots.has(w)) && mots.has(normNom(e.prenom).split(" ")[0]));
+      if (cand.length !== 1) { inconnus.push(f.name); continue; }
+      cand[0].photo = await imageEnDataURL(f, 400); ok++;
+    }
+    await sauver(); renderAdmin();
+    toast(`${ok} photo(s) ajoutée(s)` + (inconnus.length ? ` · non reconnues : ${inconnus.slice(0, 5).join(", ")}${inconnus.length > 5 ? "…" : ""}` : ""));
+  }
+  $("#f-photos").onchange = ev => { if (ev.target.files.length) importerPhotos([...ev.target.files]); ev.target.value = ""; };
+
   /* ---------- coller depuis Pronote ---------- */
   $("#lien-extracteur").href = App.lienExtracteur();
   $("#lien-extracteur").onclick = ev => { ev.preventDefault(); toast("Glisse ce bouton dans ta barre de favoris, puis utilise-le dans Pronote"); };
@@ -201,7 +218,10 @@
   addEventListener("dragleave", ev => { if (!ev.relatedTarget) $("#admin").classList.remove("survol"); });
   addEventListener("drop", ev => {
     ev.preventDefault(); $("#admin").classList.remove("survol");
+    const images = [...ev.dataTransfer.files].filter(f => f.type.startsWith("image/"));
+    if (images.length) importerPhotos(images);
     for (const f of ev.dataTransfer.files) {
+      if (f.type.startsWith("image/")) continue;
       if (/\.xlsx$/i.test(f.name)) importerXlsx(f);
       else if (/\.json$/i.test(f.name)) importerJson(f);
       else toast("Format non pris en charge : " + f.name);
