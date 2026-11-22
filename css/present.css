@@ -25,9 +25,9 @@ body{font-family:"Segoe UI",Inter,Roboto,"Helvetica Neue",Arial,sans-serif;color
 .kpi .val{font-size:92px;font-weight:800;line-height:1;color:var(--eleve)}
 .kpi .cl{font-size:24px;color:var(--ink2);margin-top:4px}
 #stage main{flex:1;display:flex;gap:56px;padding-top:24px;min-height:0}
-.gauche{flex:0 0 1080px;display:flex;flex-direction:column;min-height:0}
+.gauche{flex:0 0 872px;display:flex;flex-direction:column;min-height:0}
 .droite{flex:1;display:flex;flex-direction:column;gap:18px;min-height:0}
-.legende{white-space:nowrap;display:flex;gap:34px;font-size:23px;color:var(--ink2);margin-bottom:4px;align-items:center}
+.legende{white-space:nowrap;display:flex;gap:22px;font-size:20px;color:var(--ink2);margin-bottom:4px;align-items:center}
 .legende svg{vertical-align:middle;margin-right:8px}
 .sansnote{font-size:22px;color:var(--ink3);margin-top:8px}
 .bloc-d h3{font-size:20px;text-transform:uppercase;letter-spacing:2px;color:var(--ink3);margin-bottom:10px;font-weight:700}

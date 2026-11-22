@@ -86,7 +86,7 @@ window.App = window.App || {};
   }
 
   function graphe(e) {
-    const W = 1080, labW = 290, valW = 110, dW = 110, x0 = labW + 50, x1 = W - valW - dW - 30;
+    const W = 872, labW = 236, valW = 96, dW = 96, x0 = labW + 34, x1 = W - valW - dW - 26; // moitié gauche de l'écran
     const rows = [];
     e.poles.forEach(p => {
       rows.push({ kind: "pole", p: p.p, m: p.nom, v: p.v, v3: p.v3, mc: p.mc });
@@ -106,7 +106,7 @@ window.App = window.App || {};
       const h = isP ? hPole : hMat, cy = y + h / 2;
       (blocs[r.p] ||= { y0: y }).y1 = y + h;
       if (isP) blocs[r.p].hp = h;
-      body += `<text x="${isP ? 24 : labW}" y="${cy + 9}" font-size="${isP ? 23 : 27}" font-weight="${isP ? 800 : 500}" fill="${isP ? `var(--${r.p}-k)` : "#2a2d33"}" text-anchor="${isP ? "start" : "end"}">${esc(isP ? r.m.toUpperCase() : r.m)}</text>`;
+      body += `<text x="${isP ? 24 : labW}" y="${cy + 9}" font-size="${isP ? 20 : 25}" font-weight="${isP ? 800 : 500}" fill="${isP ? `var(--${r.p}-k)` : "#2a2d33"}" text-anchor="${isP ? "start" : "end"}">${esc(isP ? r.m.toUpperCase() : r.m)}</text>`;
       // trait d'écart à la moyenne de classe : vert pastel au-dessus, rouge pastel en dessous
       if (r.mc != null && r.v != null && r.v !== r.mc) body += `<line x1="${X(r.mc)}" x2="${X(r.v)}" y1="${cy}" y2="${cy}" stroke="var(--ecart-${r.v > r.mc ? "plus" : "moins"}${isP ? "-f" : ""})" stroke-width="8"/>`;
       if (r.mc != null) body += `<line x1="${X(r.mc)}" x2="${X(r.mc)}" y1="${cy - (isP ? 20 : 16)}" y2="${cy + (isP ? 20 : 16)}" stroke="var(--moy)" stroke-width="${isP ? 4 : 3}" stroke-linecap="round"><title>moyenne de la classe : ${fr(r.mc)}</title></line>`;
@@ -195,7 +195,7 @@ window.App = window.App || {};
       <div class="ident">${logoHTML(meta)}<div><div class="nom">${esc(meta.classe)}</div><div class="sous">${esc(meta.periode)} · ${esc(meta.annee)} · ${M.eleves.filter(e => e.gen != null).length} élèves · vue d'ensemble</div></div></div>
       <div class="kpi"><div class="bloc"><div class="lab">moyenne de classe</div><div class="val">${fr(C.moy)}</div></div>${C.moyHO != null ? `<div class="bloc ho"><div class="lab">hors options,<br>sections et LVC</div><div class="v3">${fr(C.moyHO)}</div></div>` : ""}</div>
     </header>
-    <main><section class="gauche">
+    <main><section class="gauche" style="flex-basis:1080px">
       <div class="legende"><span><svg width="22" height="22"><circle cx="11" cy="11" r="7" fill="#b7bdc7"/></svg>un élève</span><span><svg width="14" height="34"><line x1="7" x2="7" y1="3" y2="31" stroke="var(--ink)" stroke-width="4" stroke-linecap="round"/></svg>moyenne de la classe</span></div>
       <svg width="${W}" height="${y + 4}">${ax}${s}</svg></section>
       <section class="droite">${poles}<div class="pied">Moyennes non pondérées${d ? ` · données importées le ${esc(d)}` : ""}</div></section></main>
