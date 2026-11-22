@@ -108,7 +108,7 @@ window.App = window.App || {};
       if (isP) blocs[r.p].hp = h;
       body += `<text x="${isP ? 24 : labW}" y="${cy + 9}" font-size="${isP ? 23 : 27}" font-weight="${isP ? 800 : 500}" fill="${isP ? `var(--${r.p}-k)` : "#2a2d33"}" text-anchor="${isP ? "start" : "end"}">${esc(isP ? r.m.toUpperCase() : r.m)}</text>`;
       // trait d'écart à la moyenne de classe : vert pastel au-dessus, rouge pastel en dessous
-      if (r.mc != null && r.v != null && r.v !== r.mc) body += `<line x1="${X(r.mc)}" x2="${X(r.v)}" y1="${cy}" y2="${cy}" stroke="${r.v > r.mc ? "var(--ecart-plus)" : "var(--ecart-moins)"}" stroke-width="${isP ? 10 : 8}"/>`;
+      if (r.mc != null && r.v != null && r.v !== r.mc) body += `<line x1="${X(r.mc)}" x2="${X(r.v)}" y1="${cy}" y2="${cy}" stroke="var(--ecart-${r.v > r.mc ? "plus" : "moins"}${isP ? "-f" : ""})" stroke-width="${isP ? 10 : 8}"/>`;
       if (r.mc != null) body += `<line x1="${X(r.mc)}" x2="${X(r.mc)}" y1="${cy - (isP ? 20 : 16)}" y2="${cy + (isP ? 20 : 16)}" stroke="var(--moy)" stroke-width="${isP ? 4 : 3}" stroke-linecap="round"><title>moyenne de la classe : ${fr(r.mc)}</title></line>`;
       body += point(X, cy, r.v, isP ? 15 : 12, isP ? "var(--pt-pole)" : "var(--pt)");
       body += `<text x="${W - dW - 14}" y="${cy + 11}" font-size="${isP ? 36 : 31}" font-weight="${isP ? 800 : 600}" fill="#16181d" text-anchor="end">${fr(r.v)}</text>`;
