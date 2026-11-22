@@ -3,7 +3,7 @@
 Application locale pour projeter, en conseil de classe, un écran lisible par élève (à 3 m et plus) :
 moyennes par pôle, comparaison avec la fin de 3e, mots-clés des appréciations (idées
 regroupées, en vert ou rouge, marquées « 3e » si déjà relevées en 3e), synthèse des appréciations du
-trimestre, assiduité du trimestre (en rouge au-delà de 10 demi-journées), moyenne hors options et sections.
+trimestre, assiduité du trimestre (en rouge au-delà de 10 demi-journées), moyenne hors options, sections et LVC.
 
 Photos : bouton « Photos » (ou glisser-déposer), plusieurs fichiers à la fois nommés « NOM Prénom.jpg » ;
 elles restent dans le navigateur. Une vue d'ensemble de la classe ouvre la présentation.

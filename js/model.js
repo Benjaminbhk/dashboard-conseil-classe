@@ -33,8 +33,8 @@ App.calculer = function (data) {
   const pol2 = Object.fromEntries(els.map(e => [e.id, poles2(e)]));
   const polClasse = Object.fromEntries(App.POLES.map(p => [p.id, App.mean(els.map(e => pol2[e.id][p.id]))]));
   const genClasse = Object.values(gen).filter(v => v != null);
-  // moyenne hors options et sections (pôle « sec » et matières non répertoriées)
-  const genHO = Object.fromEntries(els.map(e => [e.id, App.mean(Object.entries(n2[e.id]).filter(([m]) => App.matiere(m).pole !== "sec").map(([, v]) => v))]));
+  // moyenne hors options, sections et LVC (pôle « sec », matières non répertoriées, LVC)
+  const genHO = Object.fromEntries(els.map(e => [e.id, App.mean(Object.entries(n2[e.id]).filter(([m]) => App.matiere(m).pole !== "sec" && !/^LVC/i.test(m)).map(([, v]) => v))]));
   const diff = p => (p.sci == null || p.lit == null) ? null : Math.round((p.sci - p.lit) * 100) / 100;
 
   const eleves = els.map(e => {

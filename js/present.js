@@ -145,7 +145,7 @@ window.App = window.App || {};
     stage.innerHTML = `
     <header>
       <div class="ident">${logoHTML(meta)}${e.photo ? `<img class="photo" src="${e.photo}" alt="">` : ""}<div><div class="nom">${esc(e.prenom)} <small>${esc(e.nom)}</small></div><div class="sous">${esc(sous)}</div></div></div>
-      <div class="kpi">${evo}<div class="bloc"><div class="lab">moyenne T1</div><div class="val">${fr(e.gen)}</div><div class="cl">classe : ${fr(M.classe.moy)}</div></div>${e.genHO != null && e.genHO !== e.gen ? `<div class="bloc ho"><div class="lab">hors options<br>et sections</div><div class="v3">${fr(e.genHO)}</div><div class="cl">classe : ${fr(M.classe.moyHO)}</div></div>` : ""}</div>
+      <div class="kpi">${evo}<div class="bloc"><div class="lab">moyenne T1</div><div class="val">${fr(e.gen)}</div><div class="cl">classe : ${fr(M.classe.moy)}</div></div>${e.genHO != null && e.genHO !== e.gen ? `<div class="bloc ho"><div class="lab">hors options,<br>sections et LVC</div><div class="v3">${fr(e.genHO)}</div><div class="cl">classe : ${fr(M.classe.moyHO)}</div></div>` : ""}</div>
     </header>
     <main>
       <section class="gauche">
@@ -187,7 +187,7 @@ window.App = window.App || {};
     stage.innerHTML = `
     <header>
       <div class="ident">${logoHTML(meta)}<div><div class="nom">${esc(meta.classe)}</div><div class="sous">${esc(meta.periode)} · ${esc(meta.annee)} · ${M.eleves.filter(e => e.gen != null).length} élèves · vue d'ensemble</div></div></div>
-      <div class="kpi"><div class="bloc"><div class="lab">moyenne de classe</div><div class="val">${fr(C.moy)}</div></div>${C.moyHO != null && C.moyHO !== C.moy ? `<div class="bloc ho"><div class="lab">hors options<br>et sections</div><div class="v3">${fr(C.moyHO)}</div></div>` : ""}</div>
+      <div class="kpi"><div class="bloc"><div class="lab">moyenne de classe</div><div class="val">${fr(C.moy)}</div></div>${C.moyHO != null && C.moyHO !== C.moy ? `<div class="bloc ho"><div class="lab">hors options,<br>sections et LVC</div><div class="v3">${fr(C.moyHO)}</div></div>` : ""}</div>
     </header>
     <main><section class="gauche">
       <div class="legende"><span><svg width="22" height="22"><circle cx="11" cy="11" r="7" fill="#b7bdc7"/></svg>un élève</span><span><svg width="14" height="34"><line x1="7" x2="7" y1="3" y2="31" stroke="var(--ink)" stroke-width="4" stroke-linecap="round"/></svg>moyenne de la classe</span></div>
