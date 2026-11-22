@@ -86,8 +86,6 @@
       <textarea data-k="vigilance" placeholder="S'est économisé en cours d'année (français)">${esc(versTexte(syn.vigilance))}</textarea>
       <label>Phrase de synthèse générale <small>(facultatif, ex. appréciation du PP)</small></label>
       <textarea data-k="seconde">${esc(syn.seconde || "")}</textarea>
-      <label>Bilan de fin de 3e <small>(vide = appréciation globale du bulletin)</small></label>
-      <textarea data-k="bilan3" placeholder="${esc(e.globale3 || "")}">${esc(syn.bilan3 || "")}</textarea>
       <div class="ligne-btn">
         <label class="btn sec petit">Photo<input type="file" id="f-photo" accept="image/*" hidden></label>
         ${e.photo ? `<button class="btn sec petit" id="b-nophoto">Retirer la photo</button>` : ""}

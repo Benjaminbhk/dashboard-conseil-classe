@@ -44,3 +44,30 @@ App.matiere = function (m) {
   return r ? { court: r[1], m3: r[2], pole: r[3], ordre: App.MATIERES.indexOf(r) }
            : { court: m, m3: null, pole: "sec", ordre: 99 };
 };
+
+/* Mots-clés des appréciations, regroupés par idée (dérivés et synonymes).
+   [libellé, ton (+ positif / − à surveiller), expressions reconnues, libellé si l'idée est niée ou réclamée]
+   Ex. « manque de sérieux », « doit être plus sérieux » comptent pour « manque de sérieux ».
+   Les expressions sont des débuts de mots (en minuscules) ; compléter la liste au besoin. */
+App.THEMES = [
+  ["sérieux", "+", ["sérieu", "appliqu", "consciencieu", "rigoureu", "rigueur", "soigneu", "soign"], "manque de sérieux"],
+  ["investissement", "+", ["investi", "impliqu", "implication", "motiv", "volontaire", "engag", "dynamique", "enthousias", "volonté"], "investissement insuffisant"],
+  ["participation", "+", ["particip", "intervient", "intervention", "s'exprime à l'oral", "prend la parole"], "participation insuffisante"],
+  ["bons résultats", "+", ["excellent", "très bon", "très bien", "bons résultats", "bon niveau", "solide", "brillant", "satisfaisant", "réussi", "félicitation", "remarquable"], "résultats insuffisants"],
+  ["progrès", "+", ["progrès", "progresse", "progression", "amélior", "en hausse"], "progrès attendus"],
+  ["autonomie", "+", ["autonom"], "manque d'autonomie"],
+  ["curiosité", "+", ["curieu", "curiosité", "intérêt", "intéressé", "pertinen"], "manque d'intérêt"],
+  ["régularité", "+", ["régulier", "régulière", "régularité", "constant", "constance"], "irrégularité"],
+  ["efforts", "+", ["effort"], "efforts insuffisants"],
+  ["attention", "+", ["attentif", "attentive", "concentré", "à l'écoute"], "manque de concentration"],
+  ["attitude positive", "+", ["agréable", "bienveillan", "respectueu", "exemplaire", "attitude positive", "bonne attitude", "bon état d'esprit"], "attitude à revoir"],
+  ["bavardages", "−", ["bavard", "dissip", "agité", "agitation", "discute", "perturb", "turbulen", "bruyant"]],
+  ["manque de concentration", "−", ["distrait", "inattenti", "déconcentr", "dispers", "manque de concentration", "rêveu"]],
+  ["travail insuffisant", "−", ["insuffisan", "superficiel", "se contente", "économis", "minimum", "passif", "passivité", "approfondir", "travail personnel insuffisant", "apprendre ses leçons"]],
+  ["irrégularité", "−", ["irrégul", "inégal", "dents de scie", "fluctu", "en baisse"]],
+  ["difficultés", "−", ["difficult", "fragil", "lacune", "faible", "peine", "décevant", "inquiét", "préoccup", "alarmant"]],
+  ["absences, retards", "−", ["absence", "absent", "retard"]],
+  ["organisation, oublis", "−", ["oubli", "désorganis", "manque d'organisation", "manque de méthode", "sans son matériel", "pas son matériel"]],
+  ["trop discret", "−", ["discret", "discrète", "réservé", "timide", "effacé"]],
+  ["comportement", "−", ["insolen", "impertinen", "irrespect", "inadapté", "inacceptable", "familiarité", "désinvolt"]],
+];

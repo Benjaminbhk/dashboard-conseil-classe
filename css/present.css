@@ -1,6 +1,6 @@
 :root{
   --bg:#ffffff; --ink:#16181d; --ink2:#4a505c; --ink3:#8a909b; --line:#e6e8ec;
-  --eleve:#1f4fd1; --trois:#9fb7ee; --trois-txt:#6d8bd6; --moy:#7a808b; --good:#1d7a46; --warn:#b4540a;
+  --eleve:#1f4fd1; --trois:#9fb7ee; --trois-txt:#6d8bd6; --moy:#7a808b; --good:#1d7a46; --warn:#b4540a; --bad:#c62828;
   --sci:#eef4fc; --lit:#fbf3ea; --lv:#eef7f1; --sec:#f4f2f8;
   --sci-k:#3b6fb6; --lit-k:#b8742a; --lv-k:#3d8a5a; --sec-k:#7a65a8;
 }
@@ -36,12 +36,21 @@ ul.pts li::before{position:absolute;left:0;top:0;font-weight:800}
 ul.forts li::before{content:"✓";color:var(--good)}
 ul.vigil li::before{content:"!";color:var(--warn);left:10px}
 .attente{font-size:26px;color:var(--ink3);font-style:italic}
-.assid{font-size:23px;line-height:1.45;color:var(--ink2)}
-.assid b{color:var(--ink);font-weight:600}
+.abs-l{display:flex;align-items:baseline;gap:14px;font-size:24px;color:var(--ink2);padding:4px 12px;margin:0 -12px;border-radius:10px}
+.abs-lab{flex:0 0 110px;font-weight:700;color:var(--ink)}
+.abs-n{font-size:44px;font-weight:800;color:var(--ink);min-width:52px;text-align:right;line-height:1.1}
+.abs-l.alerte{background:#fdecec}
+.abs-l.alerte .abs-n,.abs-l.alerte .abs-det{color:var(--bad)}
+.mots{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin-bottom:10px}
+.mc{display:inline-flex;align-items:center;gap:8px;padding:4px 14px;border-radius:999px;font-weight:700;line-height:1.2}
+.mc.pos{background:#e8f4ec;color:var(--good)}
+.mc.neg{background:#fdecec;color:var(--bad)}
+.mc b{font-size:.62em;font-weight:800;background:#fff;border-radius:999px;padding:1px 9px;min-width:1.6em;text-align:center}
+.mc i,.mc-3e{font-style:normal;font-size:.55em;font-weight:800;color:#fff;background:var(--ink2);border-radius:6px;padding:2px 6px}
+.mc-3e{font-size:16px}
+.mots-note{font-size:20px;color:var(--ink3);margin-top:8px}
 .bloc-d{padding-bottom:16px;border-bottom:2px solid var(--line)}
 .bloc-d:last-child{border-bottom:none}
-.profil-txt{font-size:28px;font-weight:700;margin-top:2px}
-.profil-txt span{font-weight:400;color:var(--ink2);font-size:22px}
 #stage .nav{position:absolute;right:24px;bottom:10px;font-size:16px;color:#c0c4ca}
 .pied{font-size:18px;color:var(--ink3);margin-top:auto}
 svg text{font-family:inherit}

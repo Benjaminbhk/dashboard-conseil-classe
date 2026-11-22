@@ -7,14 +7,77 @@ window.App = window.App || {};
   const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   App.fr = fr; App.esc = esc;
 
-  /* 3e = disque bleu pastel marqué « 3 », en arrière-plan ; 2nde = point bleu soutenu, au premier plan */
-  const rond3 = (x, y, r) => `<circle cx="${x}" cy="${y}" r="${r}" fill="var(--trois)"/>
-    <text x="${x}" y="${y + r * 0.4}" font-size="${r * 1.1}" font-weight="800" fill="#fff" text-anchor="middle">3</text>`;
-  function points(X, cy, v, v3, rDot, r3) {
-    let s = "";
-    if (v3 != null) s += rond3(X(v3), cy, r3);
-    if (v != null) s += `<circle cx="${X(v)}" cy="${cy}" r="${rDot}" fill="var(--eleve)" stroke="#fff" stroke-width="2.5"/>`;
-    return s;
+  const point = (X, cy, v, r) => v == null ? "" : `<circle cx="${X(v)}" cy="${cy}" r="${r}" fill="var(--eleve)" stroke="#fff" stroke-width="2.5"/>`;
+
+  /* Mots-clés : on cherche dans chaque appréciation les idées de App.THEMES (dérivés, synonymes).
+     Une idée « positive » niée ou réclamée (« manque de sérieux », « doit participer davantage »)
+     compte pour son pendant négatif. Chiffre = nombre d'appréciations qui l'évoquent. */
+  const NEG_AVANT = /(manque|manquer|pas |pas d|peu |peu d|insuffis|doit|devra|devrait|faut|davantage|plus de |plus d'|plus |trop peu|aucun|absence de|moins |faible )[^.;!?]{0,25}$/;
+  const NEG_APRES = /^[^.;!?]{0,25}(insuffisan|davantage|à améliorer|à renforcer|à développer|fait défaut|doit être)/;
+  const GARDER = /(poursuiv|continu|mainten|garder|conserv|confirm)[^.;!?]{0,25}$/;
+  App.themesTexte = function (texte) {
+    const t = " " + String(texte || "").toLowerCase().replace(/[’]/g, "'") + " ";
+    const trouves = new Map(); // libellé -> ton
+    App.THEMES.forEach(([lib, ton, exprs, libNeg]) => {
+      exprs.forEach(x => {
+        let i = 0;
+        while ((i = t.indexOf(x, i)) >= 0) {
+          const avant = t[i - 1], debut = !/[a-zàâäçéèêëîïôöùûüœ]/.test(avant);
+          if (debut) {
+            const av = t.slice(Math.max(0, i - 40), i), ap = t.slice(i + x.length, i + x.length + 40);
+            const nie = ton === "+" && !GARDER.test(av) && (NEG_AVANT.test(av) || NEG_APRES.test(ap));
+            if (nie && libNeg) trouves.set(libNeg, "−");
+            else if (!nie) trouves.set(lib, ton);
+          }
+          i += x.length;
+        }
+      });
+    });
+    return trouves;
+  };
+  App.themes = function (appr, avant) {
+    const cpt = new Map();
+    (appr || []).forEach(a => App.themesTexte(a.txt).forEach((ton, lib) => {
+      const o = cpt.get(lib) || { lib, ton, n: 0 }; o.n++; cpt.set(lib, o);
+    }));
+    const deja = new Set();
+    (avant || []).forEach(txt => App.themesTexte(txt).forEach((ton, lib) => deja.add(lib)));
+    return [...cpt.values()].map(o => ({ ...o, deja: deja.has(o.lib) })).sort((x, y) => y.n - x.n || x.lib.localeCompare(y.lib, "fr"));
+  };
+  function zoneMots(e) {
+    const nA = (e.appr2 || []).length;
+    if (!nA) return `<div class="attente">Apparaîtront quand les appréciations du trimestre seront saisies.</div>`;
+    const th = App.themes(e.appr2, [...(e.appr3 || []).map(a => a.txt), e.globale3 || ""]);
+    if (!th.length) return `<div class="attente">Aucune idée récurrente dans les ${nA} appréciation(s).</div>`;
+    const max = th[0].n;
+    const puce = x => `<span class="mc ${x.ton === "+" ? "pos" : "neg"}" style="font-size:${Math.round(26 + 18 * (x.n - 1) / Math.max(max - 1, 1))}px">${esc(x.lib)}<b>${x.n}</b>${x.deja ? `<i title="déjà présent dans les appréciations de 3e">3e</i>` : ""}</span>`;
+    const pos = th.filter(x => x.ton === "+").slice(0, 7), neg = th.filter(x => x.ton !== "+").slice(0, 7);
+    const deja = th.some(x => x.deja);
+    return `${pos.length ? `<div class="mots">${pos.map(puce).join("")}</div>` : ""}${neg.length ? `<div class="mots">${neg.map(puce).join("")}</div>` : ""}
+      <div class="mots-note">chiffre = nombre d'appréciations qui l'évoquent (sur ${nA})${deja ? ` · <i class="mc-3e">3e</i> déjà relevé dans les appréciations de 3e` : ""}</div>`;
+  }
+
+  /* Assiduité : nombre de demi-journées lu dans le texte (Pronote ou bulletin), rouge au-delà de 10 */
+  const SEUIL_ABS = 10;
+  const lireAbs = t => {
+    t = String(t || "");
+    if (/aucune absence/i.test(t)) return 0;
+    const m = t.match(/(\d+(?:[,.]\d+)?)\s*demi-journ/i);
+    return m ? parseFloat(m[1].replace(",", ".")) : null;
+  };
+  const lireRet = t => { t = String(t || ""); if (/aucun retard/i.test(t)) return 0; const m = t.match(/retards?\s*:\s*(\d+)/i) || t.match(/(\d+)\s*retards?/i); return m ? +m[1] : null; };
+  function ligneAbs(lab, demi, nj, ret, brut) {
+    if (demi == null && ret == null) return `<div class="abs-l"><span class="abs-lab">${lab}</span><span class="abs-det">${esc(brut || "—")}</span></div>`;
+    const d = demi == null ? null : Math.round(demi), alerte = d != null && d > SEUIL_ABS;
+    return `<div class="abs-l${alerte ? " alerte" : ""}"><span class="abs-lab">${lab}</span><span class="abs-n">${d == null ? "—" : d}</span><span class="abs-det">${d === 0 ? "aucune absence" : `demi-journée${d > 1 ? "s" : ""} d'absence`}${nj ? ` (${nj} non justifiée${nj > 1 ? "s" : ""})` : ""}${ret != null ? ` · ${ret} retard${ret > 1 ? "s" : ""}` : ""}</span></div>`;
+  }
+  function assiduite(e) {
+    let l2;
+    if (e.vie2) l2 = ligneAbs("2nde", lireAbs(e.vie2), null, lireRet(e.vie2), e.vie2);
+    else if (e.abs2) { const a = e.abs2, n = x => x == null || x === "" ? 0 : parseFloat(String(x).replace(",", ".")) || 0; l2 = ligneAbs("2nde", n(a.demi_journees), n(a.non_just), n(a.retards)); }
+    else l2 = ligneAbs("2nde", null, null, null, "pas de récapitulatif");
+    const l3 = e.abs3 ? ligneAbs("3e (T3)", lireAbs(e.abs3), null, lireRet(e.abs3), e.abs3) : "";
+    return l2 + l3;
   }
 
   function graphe(e) {
@@ -38,7 +101,7 @@ window.App = window.App || {};
       (blocs[r.p] ||= { y0: y }).y1 = y + h;
       body += `<text x="${isP ? 24 : labW}" y="${cy + 9}" font-size="${isP ? 23 : 27}" font-weight="${isP ? 800 : 500}" fill="${isP ? `var(--${r.p}-k)` : "#2a2d33"}" text-anchor="${isP ? "start" : "end"}">${esc(isP ? r.m.toUpperCase() : r.m)}</text>`;
       if (r.mc != null) body += `<line x1="${X(r.mc)}" x2="${X(r.mc)}" y1="${cy - (isP ? 20 : 16)}" y2="${cy + (isP ? 20 : 16)}" stroke="var(--moy)" stroke-width="${isP ? 4 : 3}" stroke-linecap="round"><title>moyenne de la classe : ${fr(r.mc)}</title></line>`;
-      body += points(X, cy, r.v, r.v3, isP ? 14 : 11, isP ? 19 : 16);
+      body += point(X, cy, r.v, isP ? 14 : 12);
       body += `<text x="${W - dW - 14}" y="${cy + 11}" font-size="${isP ? 36 : 31}" font-weight="${isP ? 800 : 600}" fill="#16181d" text-anchor="end">${fr(r.v)}</text>`;
       if (r.v3 != null) {
         const d = r.v - r.v3, big = Math.abs(d) >= 1.5;
@@ -53,21 +116,8 @@ window.App = window.App || {};
       axis += `<line x1="${X(t)}" x2="${X(t)}" y1="${top - 4}" y2="${y}" stroke="${t === 10 ? "#c9cdd3" : "#fff"}" stroke-width="${t === 10 ? 3 : 2}"/>`;
       axis += `<text x="${X(t)}" y="${top - 14}" font-size="20" fill="#9aa0aa" text-anchor="middle">${t}</text>`;
     }
-    axis += `<text x="${W - dW - 14}" y="${top - 14}" font-size="19" fill="#9aa0aa" text-anchor="end">T1</text><text x="${W - 14}" y="${top - 14}" font-size="19" fill="#9aa0aa" text-anchor="end">vs 3e</text>`;
+    axis += `<text x="${W - dW - 14}" y="${top - 14}" font-size="19" fill="#9aa0aa" text-anchor="end">T1</text><text x="${W - 14}" y="${top - 14}" font-size="19" fill="#9aa0aa" text-anchor="end">vs fin 3e</text>`;
     return `<svg width="${W}" height="${y + 4}" viewBox="0 0 ${W} ${y + 4}">${bg}${axis}${body}</svg>`;
-  }
-
-  function jaugeProfil(e) {
-    const W = 640, H = 82, x0 = 30, x1 = W - 30, R = 4, cy = 26;
-    const X = d => x0 + (Math.max(-R, Math.min(R, d)) + R) / (2 * R) * (x1 - x0);
-    let s = `<svg width="${W}" height="${H}">`;
-    s += `<rect x="${X(-1)}" y="${cy - 18}" width="${X(1) - X(-1)}" height="36" rx="8" fill="#f1f2f4"/>`;
-    s += `<line x1="${x0}" x2="${x1}" y1="${cy}" y2="${cy}" stroke="#cfd3d9" stroke-width="3"/>`;
-    s += `<text x="${x0}" y="${cy + 46}" font-size="21" fill="var(--lit-k)" font-weight="700">◀ littéraire</text>`;
-    s += `<text x="${(x0 + x1) / 2}" y="${cy + 46}" font-size="21" fill="#8a909b" text-anchor="middle">mixte</text>`;
-    s += `<text x="${x1}" y="${cy + 46}" font-size="21" fill="var(--sci-k)" font-weight="700" text-anchor="end">scientifique ▶</text>`;
-    s += points(X, cy, e.profil, e.profil3, 12, 17);
-    return s + "</svg>";
   }
 
   // un point de synthèse : texte + matière(s) entre parenthèses
@@ -81,22 +131,12 @@ window.App = window.App || {};
     const syn = e.syn || {}, meta = M.meta;
     const sous = [titre(meta), e.options.join(", "), e.classe3 ? `3e : ${e.classe3}` : ""].filter(Boolean).join("   ·   ");
     const forts = (syn.forts || []).map(item).join(""), vigil = (syn.vigilance || []).map(item).join("");
-    const a = e.abs2;
-    const short = d => String(d || "").replace(/\/20\d\d/, "");
-    const abs2txt = a ? `<b>${a.demi_journees || "0"}</b> demi-journée(s) d'absence${a.non_just ? ` dont ${a.non_just} non justifiée(s)` : ""}, <b>${a.retards || "0"}</b> retard(s) <span style="color:var(--ink3);font-size:20px">(du ${esc(short(a.du))} au ${esc(short(a.au))})</span>` : "pas de récapitulatif";
-    let profilLine = "";
-    if (e.profil != null) {
-      const p1 = App.profilNom(e.profil), p0 = App.profilNom(e.profil3);
-      profilLine = `<div class="profil-txt">Profil ${p1}${e.profil3 != null ? (p0 !== p1 ? ` <span>· ${p0} en 3e</span>` : ` <span>· déjà en 3e</span>`) : ""}</div>
-        <div style="font-size:20px;color:var(--ink3)">écart sciences − lettres : ${sg(e.profil)} pt au T1${e.profil3 != null ? `, ${sg(e.profil3)} pt en 3e` : ""}</div>`;
-    }
     const evo = e.gen3 != null ? `<div class="bloc"><div class="lab">fin de 3e</div><div class="v3">${fr(e.gen3)}</div></div><div class="fl">→</div>` : "";
     const nAppr2 = (e.appr2 || []).length;
     const synGen = syn.seconde || e.globale2 || "";
     const appr2 = (forts || vigil || synGen)
       ? `${synGen ? `<div class="quote" style="margin-bottom:8px">${esc(synGen)}</div>` : ""}${forts ? `<ul class="pts forts">${forts}</ul>` : ""}${vigil ? `<ul class="pts vigil">${vigil}</ul>` : ""}`
       : `<div class="attente">${nAppr2 ? `${nAppr2} appréciation(s) saisie(s), synthèse à faire.` : "Pas encore saisies dans Pronote."}</div>`;
-    const bilan3 = syn.bilan3 || e.globale3;
     stage.innerHTML = `
     <header>
       <div class="ident">${logoHTML(meta)}${e.photo ? `<img class="photo" src="${e.photo}" alt="">` : ""}<div><div class="nom">${esc(e.prenom)} <small>${esc(e.nom)}</small></div><div class="sous">${esc(sous)}</div></div></div>
@@ -105,7 +145,6 @@ window.App = window.App || {};
     <main>
       <section class="gauche">
         <div class="legende">
-          <span><svg width="36" height="36">${rond3(18, 18, 16)}</svg>fin de 3e</span>
           <span><svg width="30" height="30"><circle cx="15" cy="15" r="12" fill="var(--eleve)"/></svg>T1 de 2nde</span>
           <span><svg width="14" height="34"><line x1="7" x2="7" y1="3" y2="31" stroke="var(--moy)" stroke-width="4" stroke-linecap="round"/></svg>moyenne de la classe</span>
         </div>
@@ -113,10 +152,9 @@ window.App = window.App || {};
         ${e.sansNote.length ? `<div class="sansnote">Sans note ce trimestre : ${esc(e.sansNote.join(", "))}</div>` : ""}
       </section>
       <section class="droite">
-        ${e.profil != null ? `<div class="bloc-d"><h3>Profil</h3>${jaugeProfil(e)}${profilLine}</div>` : ""}
+        <div class="bloc-d"><h3>Mots-clés des appréciations</h3>${zoneMots(e)}</div>
         <div class="bloc-d" style="flex:1"><h3>Appréciations du 1er trimestre</h3>${appr2}</div>
-        ${bilan3 ? `<div class="bloc-d"><h3>Bilan de fin de 3e</h3><div class="quote" style="color:var(--ink2)"><i>${esc(bilan3)}</i></div></div>` : ""}
-        <div class="bloc-d"><h3>Assiduité</h3><div class="assid">2nde : ${e.vie2 ? esc(e.vie2) : abs2txt}<br>3e : ${esc(e.abs3 || "—")}</div></div>
+        <div class="bloc-d"><h3>Assiduité</h3>${assiduite(e)}</div>
       </section>
     </main>
     <div class="nav">${pos}</div>`;

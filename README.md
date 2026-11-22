@@ -1,8 +1,9 @@
 # Dashboard du conseil de classe
 
 Application locale pour projeter, en conseil de classe, un écran lisible par élève (à 3 m et plus) :
-moyennes par pôle, comparaison avec la fin de 3e, profil scientifique / littéraire, synthèse des
-appréciations du trimestre, assiduité. Une vue d'ensemble de la classe ouvre la présentation.
+moyennes par pôle, comparaison avec la fin de 3e, mots-clés des appréciations (idées
+regroupées, en vert ou rouge, marquées « 3e » si déjà relevées en 3e), synthèse des appréciations du
+trimestre, assiduité (en rouge au-delà de 10 demi-journées). Une vue d'ensemble de la classe ouvre la présentation.
 
 ## Utilisation
 
@@ -37,7 +38,7 @@ corrections manuelles sont conservés.
 
 | Fichier | Rôle |
 |---|---|
-| `js/config.js` | Pôles et correspondance des matières Pronote 2nde ↔ 3e (à adapter à une autre classe) |
+| `js/config.js` | Pôles, correspondance des matières Pronote 2nde ↔ 3e, liste des mots-clés et synonymes (à adapter) |
 | `js/import-xlsx.js` | Lecture du classeur d'extraction Pronote |
 | `js/model.js` | Calculs : moyennes par pôle, moyennes de classe, profil |
 | `js/present.js` | Rendu des écrans (1920×1080) |
