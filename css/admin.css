@@ -53,3 +53,10 @@ h2 small{font-weight:400;color:#8a909b;font-size:13px;margin-left:6px}
 #liste div{display:grid;grid-template-columns:repeat(3,1fr);gap:10px 40px}
 #liste button{font-size:20px;background:none;border:none;color:#fff;text-align:left;cursor:pointer;padding:6px 10px;border-radius:8px;font-family:inherit}
 #liste button:hover{background:#333}
+.modal{position:fixed;inset:0;background:rgba(20,22,26,.55);display:flex;align-items:center;justify-content:center;z-index:30}
+.modal-box{background:#fff;border-radius:14px;padding:22px 26px;width:min(760px,92vw);max-height:90vh;overflow:auto}
+.modal-box h2{font-size:20px;margin-bottom:10px}
+.aide{font-size:14px;color:#4a505c;margin:8px 0;line-height:1.5}
+ol.aide{padding-left:20px}
+.lienbtn{background:none;border:none;color:#1f4fd1;text-decoration:underline;cursor:pointer;font:inherit;padding:0}
+#ta-pronote{width:100%;box-sizing:border-box;min-height:120px;font:12px monospace;border:1px solid #d4d8de;border-radius:8px;padding:8px;margin-top:6px}

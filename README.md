@@ -14,7 +14,15 @@ appréciations du trimestre, assiduité. Une vue d'ensemble de la classe ouvre l
    ajouter une photo ; l'aperçu se met à jour en direct.
 6. **▶ Présenter** : plein écran, `←` `→` pour naviguer, `L` pour la liste des élèves, `Échap` pour revenir à l'admin.
 
-Pour mettre à jour juste avant le conseil : réimporter le nouveau classeur. Les synthèses, photos, logo et
+### Mettre à jour depuis Pronote (juste avant le conseil)
+
+Bouton **Coller depuis Pronote** : glisser une fois le favori « 📋 Extraire Pronote » dans la barre de favoris.
+Ensuite, dans Pronote (Bulletins → Bulletin, classe et trimestre choisis), cliquer sur ce favori : il passe d'un élève
+à l'autre en lecture seule (environ 1 minute) et affiche un texte à copier. Le coller dans l'appli met à jour les
+moyennes, les appréciations du trimestre et la vie scolaire de chaque élève. Si le favori est bloqué, le même script
+peut être collé dans la console du navigateur (F12).
+
+Autre possibilité : réimporter le nouveau classeur. Les synthèses, photos, logo et
 corrections manuelles sont conservés.
 
 ## Confidentialité
@@ -33,6 +41,7 @@ corrections manuelles sont conservés.
 | `js/import-xlsx.js` | Lecture du classeur d'extraction Pronote |
 | `js/model.js` | Calculs : moyennes par pôle, moyennes de classe, profil |
 | `js/present.js` | Rendu des écrans (1920×1080) |
+| `js/pronote.js` | Extracteur à lancer dans Pronote + import du texte collé |
 | `js/app.js` | Admin, stockage, présentation |
 | `vendor/xlsx.core.min.js` | SheetJS 0.18.5 (Apache 2.0) pour lire les .xlsx |
 
@@ -40,5 +49,4 @@ Les moyennes sont non pondérées (l'extract ne contient pas les coefficients).
 
 ## À venir
 
-- Import direct des PDF de bulletins Pronote.
 - Photos des élèves depuis Pronote.

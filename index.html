@@ -15,6 +15,7 @@
     <div class="actions">
       <label class="btn">Importer le classeur (.xlsx)<input type="file" id="f-xlsx" accept=".xlsx" hidden></label>
       <label class="btn sec">Logo<input type="file" id="f-logo" accept="image/*" hidden></label>
+      <button class="btn" id="b-pronote">Coller depuis Pronote</button>
       <button class="btn sec" id="b-export">Sauvegarder (.json)</button>
       <label class="btn sec">Restaurer / synthèses<input type="file" id="f-json" accept=".json" hidden></label>
       <button class="btn go" id="b-present">▶ Présenter</button>
@@ -36,6 +37,22 @@
     </div>
   </div>
   <div id="toast"></div>
+  <div id="modal-pronote" class="modal" hidden>
+    <div class="modal-box">
+      <h2>Mettre à jour depuis Pronote</h2>
+      <p class="aide">À faire une seule fois : glisse ce bouton dans ta barre de favoris →
+        <a id="lien-extracteur" class="btn sec petit" href="#">📋 Extraire Pronote</a>
+        <small>(si la barre est masquée : Ctrl+Maj+B, ou Cmd+Maj+B sur Mac)</small></p>
+      <ol class="aide">
+        <li>Dans Pronote : <b>Bulletins → Bulletin</b>, choisis la classe et le trimestre.</li>
+        <li>Clique sur le favori <b>📋 Extraire Pronote</b>. Il passe tout seul d'un élève à l'autre (environ 1 minute), sans rien modifier.</li>
+        <li>Copie le texte qui s'affiche, puis colle-le ci-dessous.</li>
+      </ol>
+      <p class="aide"><small>Si le favori ne fait rien : <button class="lienbtn" id="b-copier-script">copier le script</button>, puis dans Pronote ouvre la console (F12 → Console), colle et appuie sur Entrée.</small></p>
+      <textarea id="ta-pronote" placeholder="Colle ici le texte copié depuis Pronote"></textarea>
+      <div class="ligne-btn"><button class="btn" id="b-appliquer">Appliquer</button><button class="btn sec" id="b-fermer">Fermer</button></div>
+    </div>
+  </div>
 </div>
 
 <!-- Mode présentation -->
@@ -50,6 +67,7 @@
 <script src="js/model.js"></script>
 <script src="js/store.js"></script>
 <script src="js/present.js"></script>
+<script src="js/pronote.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>
