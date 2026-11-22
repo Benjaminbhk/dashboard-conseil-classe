@@ -36,11 +36,10 @@ ul.pts li::before{position:absolute;left:0;top:0;font-weight:800}
 ul.forts li::before{content:"✓";color:var(--good)}
 ul.vigil li::before{content:"!";color:var(--warn);left:10px}
 .attente{font-size:26px;color:var(--ink3);font-style:italic}
-.abs-l{display:flex;align-items:baseline;gap:14px;font-size:24px;color:var(--ink2);padding:4px 12px;margin:0 -12px;border-radius:10px}
-.abs-lab{flex:0 0 110px;font-weight:700;color:var(--ink)}
-.abs-n{font-size:44px;font-weight:800;color:var(--ink);min-width:52px;text-align:right;line-height:1.1}
-.abs-l.alerte{background:#fdecec}
-.abs-l.alerte .abs-n,.abs-l.alerte .abs-det{color:var(--bad)}
+.assid{font-size:24px;line-height:1.4;color:var(--ink2)}
+.assid b{color:var(--ink);font-weight:700}
+.assid.alerte,.assid.alerte b{color:var(--bad)}
+.assid .per{font-size:20px;color:var(--ink3)}
 .mots{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin-bottom:10px}
 .mc{display:inline-flex;align-items:center;gap:8px;padding:4px 14px;border-radius:999px;font-weight:700;line-height:1.2}
 .mc.pos{background:#e8f4ec;color:var(--good)}

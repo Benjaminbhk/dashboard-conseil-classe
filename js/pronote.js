@@ -41,7 +41,7 @@ App.extracteurPronote = async function () {
     }
     const vs = c >= 0 ? t.slice(c, d > 0 ? d : c + 800).split("\n").map(s => s.trim()).filter(Boolean) : [];
     const ig = vs.indexOf("Appréciation globale");
-    return { notes, appr, vie: vs[1] || "", globale: ig >= 0 ? vs.slice(ig + 1).join(" ").trim() : "" };
+    return { notes, appr, vie: vs.slice(1, ig >= 0 ? Math.min(ig, 5) : 4).join(" · "), globale: ig >= 0 ? vs.slice(ig + 1).join(" ").trim() : "" };
   }
 
   const c0 = combos();

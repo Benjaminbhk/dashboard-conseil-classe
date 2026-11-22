@@ -66,18 +66,21 @@ window.App = window.App || {};
     return m ? parseFloat(m[1].replace(",", ".")) : null;
   };
   const lireRet = t => { t = String(t || ""); if (/aucun retard/i.test(t)) return 0; const m = t.match(/retards?\s*:\s*(\d+)/i) || t.match(/(\d+)\s*retards?/i); return m ? +m[1] : null; };
-  function ligneAbs(lab, demi, nj, ret, brut) {
-    if (demi == null && ret == null) return `<div class="abs-l"><span class="abs-lab">${lab}</span><span class="abs-det">${esc(brut || "—")}</span></div>`;
-    const d = demi == null ? null : Math.round(demi), alerte = d != null && d > SEUIL_ABS;
-    return `<div class="abs-l${alerte ? " alerte" : ""}"><span class="abs-lab">${lab}</span><span class="abs-n">${d == null ? "—" : d}</span><span class="abs-det">${d === 0 ? "aucune absence" : `demi-journée${d > 1 ? "s" : ""} d'absence`}${nj ? ` (${nj} non justifiée${nj > 1 ? "s" : ""})` : ""}${ret != null ? ` · ${ret} retard${ret > 1 ? "s" : ""}` : ""}</span></div>`;
-  }
+  // T1 de 2nde : récapitulatif des absences du classeur (avec ses dates), sinon texte « Vie scolaire » du bulletin Pronote
   function assiduite(e) {
-    let l2;
-    if (e.vie2) l2 = ligneAbs("2nde", lireAbs(e.vie2), null, lireRet(e.vie2), e.vie2);
-    else if (e.abs2) { const a = e.abs2, n = x => x == null || x === "" ? 0 : parseFloat(String(x).replace(",", ".")) || 0; l2 = ligneAbs("2nde", n(a.demi_journees), n(a.non_just), n(a.retards)); }
-    else l2 = ligneAbs("2nde", null, null, null, "pas de récapitulatif");
-    const l3 = e.abs3 ? ligneAbs("3e (T3)", lireAbs(e.abs3), null, lireRet(e.abs3), e.abs3) : "";
-    return l2 + l3;
+    const n = x => x == null || x === "" ? 0 : parseFloat(String(x).replace(",", ".")) || 0;
+    let d, nj = 0, ret, per = "", brut = "";
+    if (e.abs2) {
+      const a = e.abs2; d = n(a.demi_journees); nj = n(a.non_just); ret = n(a.retards);
+      const court = x => String(x || "").replace(/\/20\d\d/, "");
+      if (a.du && a.au) per = `du ${court(a.du)} au ${court(a.au)}`;
+    } else if (e.vie2) { d = lireAbs(e.vie2); ret = lireRet(e.vie2); brut = e.vie2; per = "bulletin T1"; }
+    if (d == null && ret == null) return `<div class="assid">${esc(brut || "Pas de récapitulatif d'absences.")}</div>`;
+    d = d == null ? null : Math.round(d);
+    const alerte = d != null && d > SEUIL_ABS;
+    const txt = d == null ? "" : d === 0 ? "Aucune absence" : `<b>${d}</b> demi-journée${d > 1 ? "s" : ""} d'absence${nj ? ` dont ${nj} non justifiée${nj > 1 ? "s" : ""}` : ""}`;
+    const r = ret == null ? "" : ret === 0 ? "aucun retard" : `<b>${ret}</b> retard${ret > 1 ? "s" : ""}`;
+    return `<div class="assid${alerte ? " alerte" : ""}">${[txt, r].filter(Boolean).join(", ")}${per ? ` <span class="per">(${esc(per)})</span>` : ""}</div>`;
   }
 
   function graphe(e) {
@@ -154,7 +157,7 @@ window.App = window.App || {};
       <section class="droite">
         <div class="bloc-d"><h3>Mots-clés des appréciations</h3>${zoneMots(e)}</div>
         <div class="bloc-d" style="flex:1"><h3>Appréciations du 1er trimestre</h3>${appr2}</div>
-        <div class="bloc-d"><h3>Assiduité</h3>${assiduite(e)}</div>
+        <div class="bloc-d"><h3>Assiduité au 1er trimestre</h3>${assiduite(e)}</div>
       </section>
     </main>
     <div class="nav">${pos}</div>`;
