@@ -92,8 +92,9 @@ window.App = window.App || {};
     }
     const evo = e.gen3 != null ? `<div class="bloc"><div class="lab">fin de 3e</div><div class="v3">${fr(e.gen3)}</div></div><div class="fl">→</div>` : "";
     const nAppr2 = (e.appr2 || []).length;
-    const appr2 = (forts || vigil || syn.seconde)
-      ? `${syn.seconde ? `<div class="quote" style="margin-bottom:8px">${esc(syn.seconde)}</div>` : ""}${forts ? `<ul class="pts forts">${forts}</ul>` : ""}${vigil ? `<ul class="pts vigil">${vigil}</ul>` : ""}`
+    const synGen = syn.seconde || e.globale2 || "";
+    const appr2 = (forts || vigil || synGen)
+      ? `${synGen ? `<div class="quote" style="margin-bottom:8px">${esc(synGen)}</div>` : ""}${forts ? `<ul class="pts forts">${forts}</ul>` : ""}${vigil ? `<ul class="pts vigil">${vigil}</ul>` : ""}`
       : `<div class="attente">${nAppr2 ? `${nAppr2} appréciation(s) saisie(s), synthèse à faire.` : "Pas encore saisies dans Pronote."}</div>`;
     const bilan3 = syn.bilan3 || e.globale3;
     stage.innerHTML = `
@@ -115,7 +116,7 @@ window.App = window.App || {};
         ${e.profil != null ? `<div class="bloc-d"><h3>Profil</h3>${jaugeProfil(e)}${profilLine}</div>` : ""}
         <div class="bloc-d" style="flex:1"><h3>Appréciations du 1er trimestre</h3>${appr2}</div>
         ${bilan3 ? `<div class="bloc-d"><h3>Bilan de fin de 3e</h3><div class="quote" style="color:var(--ink2)"><i>${esc(bilan3)}</i></div></div>` : ""}
-        <div class="bloc-d"><h3>Assiduité</h3><div class="assid">2nde : ${abs2txt}<br>3e : ${esc(e.abs3 || "—")}</div></div>
+        <div class="bloc-d"><h3>Assiduité</h3><div class="assid">2nde : ${e.vie2 ? esc(e.vie2) : abs2txt}<br>3e : ${esc(e.abs3 || "—")}</div></div>
       </section>
     </main>
     <div class="nav">${pos}</div>`;

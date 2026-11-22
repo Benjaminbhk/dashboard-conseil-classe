@@ -172,6 +172,25 @@
     const f = ev.target.files[0]; if (!f || !DATA) return;
     DATA.meta.logo = await imageEnDataURL(f, 600); await sauver(); renderAdmin(); toast("Logo enregistré");
   };
+  /* ---------- coller depuis Pronote ---------- */
+  $("#lien-extracteur").href = App.lienExtracteur();
+  $("#lien-extracteur").onclick = ev => { ev.preventDefault(); toast("Glisse ce bouton dans ta barre de favoris, puis utilise-le dans Pronote"); };
+  $("#b-pronote").onclick = () => { if (!DATA) { toast("Importe d'abord le classeur"); return; } $("#modal-pronote").hidden = false; $("#ta-pronote").focus(); };
+  $("#b-fermer").onclick = () => { $("#modal-pronote").hidden = true; };
+  $("#b-copier-script").onclick = async () => {
+    const code = "(" + App.extracteurPronote.toString() + ")()";
+    try { await navigator.clipboard.writeText(code); toast("Script copié"); }
+    catch (e) { $("#ta-pronote").value = code; $("#ta-pronote").select(); toast("Copie le script sélectionné (Ctrl+C), puis efface la zone"); }
+  };
+  $("#b-appliquer").onclick = async () => {
+    try {
+      const r = App.importerPronote(DATA, $("#ta-pronote").value);
+      await sauver(); renderAdmin();
+      $("#modal-pronote").hidden = true; $("#ta-pronote").value = "";
+      toast(`${r.ok} élève(s) mis à jour depuis Pronote` + (r.inconnus.length ? ` · non reconnus : ${r.inconnus.join(", ")}` : ""));
+    } catch (err) { toast("Impossible : " + err.message); }
+  };
+
   $("#b-export").onclick = () => {
     if (!DATA) return;
     const a = document.createElement("a");
