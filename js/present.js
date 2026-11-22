@@ -102,6 +102,7 @@ window.App = window.App || {};
       if (isP) { if (!first) y += gapPole; first = false; }
       const h = isP ? hPole : hMat, cy = y + h / 2;
       (blocs[r.p] ||= { y0: y }).y1 = y + h;
+      if (isP) blocs[r.p].hp = h;
       body += `<text x="${isP ? 24 : labW}" y="${cy + 9}" font-size="${isP ? 23 : 27}" font-weight="${isP ? 800 : 500}" fill="${isP ? `var(--${r.p}-k)` : "#2a2d33"}" text-anchor="${isP ? "start" : "end"}">${esc(isP ? r.m.toUpperCase() : r.m)}</text>`;
       if (r.mc != null) body += `<line x1="${X(r.mc)}" x2="${X(r.mc)}" y1="${cy - (isP ? 20 : 16)}" y2="${cy + (isP ? 20 : 16)}" stroke="var(--moy)" stroke-width="${isP ? 4 : 3}" stroke-linecap="round"><title>moyenne de la classe : ${fr(r.mc)}</title></line>`;
       body += point(X, cy, r.v, isP ? 14 : 12);
@@ -113,7 +114,7 @@ window.App = window.App || {};
       y += h;
     });
     let bg = "";
-    Object.entries(blocs).forEach(([p, b]) => bg += `<rect x="0" y="${b.y0}" width="${W}" height="${b.y1 - b.y0}" rx="14" fill="var(--${p})"/><rect x="0" y="${b.y0}" width="6" height="${b.y1 - b.y0}" rx="3" fill="var(--${p}-k)"/>`);
+    Object.entries(blocs).forEach(([p, b]) => bg += `<rect x="0" y="${b.y0}" width="${W}" height="${b.y1 - b.y0}" rx="14" fill="var(--${p})"/><path d="M0 ${b.y0 + 14} a14 14 0 0 1 14 -14 h${W - 28} a14 14 0 0 1 14 14 v${b.hp - 14} h${-W} z" fill="var(--${p}-d)"/><rect x="0" y="${b.y0}" width="6" height="${b.y1 - b.y0}" rx="3" fill="var(--${p}-k)"/>`);
     let axis = "";
     for (let t = 0; t <= 20; t += 2) {
       axis += `<line x1="${X(t)}" x2="${X(t)}" y1="${top - 4}" y2="${y}" stroke="${t === 10 ? "#c9cdd3" : "#fff"}" stroke-width="${t === 10 ? 3 : 2}"/>`;
