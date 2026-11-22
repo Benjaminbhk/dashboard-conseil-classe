@@ -4,7 +4,7 @@ window.App = window.App || {};
 
 App.POLES = [
   { id: "sci", nom: "Pôle scientifique" },
-  { id: "lit", nom: "Pôle littéraire" },
+  { id: "lit", nom: "Pôle humanités" },
   { id: "lv",  nom: "Langues vivantes" },
   { id: "sec", nom: "Sections et options" },
 ];
