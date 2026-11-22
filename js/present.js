@@ -114,7 +114,7 @@ window.App = window.App || {};
       y += h;
     });
     let bg = "";
-    Object.entries(blocs).forEach(([p, b]) => bg += `<rect x="0" y="${b.y0}" width="${W}" height="${b.y1 - b.y0}" rx="14" fill="var(--${p})"/><path d="M0 ${b.y0 + 14} a14 14 0 0 1 14 -14 h${W - 28} a14 14 0 0 1 14 14 v${b.hp - 14} h${-W} z" fill="var(--${p}-d)"/><rect x="0" y="${b.y0}" width="6" height="${b.y1 - b.y0}" rx="3" fill="var(--${p}-k)"/>`);
+    Object.entries(blocs).forEach(([p, b]) => bg += `<rect x="0" y="${b.y0}" width="${W}" height="${b.y1 - b.y0}" rx="14" fill="var(--${p})"/><path d="M0 ${b.y0 + 14} a14 14 0 0 1 14 -14 h${W - 28} a14 14 0 0 1 14 14 v${b.hp - 14} h${-W} z" fill="var(--${p}-d, #dde3ec)"/><rect x="0" y="${b.y0}" width="6" height="${b.y1 - b.y0}" rx="3" fill="var(--${p}-k)"/>`);
     let axis = "";
     for (let t = 0; t <= 20; t += 2) {
       axis += `<line x1="${X(t)}" x2="${X(t)}" y1="${top - 4}" y2="${y}" stroke="${t === 10 ? "#c9cdd3" : "#fff"}" stroke-width="${t === 10 ? 3 : 2}"/>`;

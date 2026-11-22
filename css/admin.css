@@ -60,3 +60,4 @@ h2 small{font-weight:400;color:#8a909b;font-size:13px;margin-left:6px}
 ol.aide{padding-left:20px}
 .lienbtn{background:none;border:none;color:#1f4fd1;text-decoration:underline;cursor:pointer;font:inherit;padding:0}
 #ta-pronote{width:100%;box-sizing:border-box;min-height:120px;font:12px monospace;border:1px solid #d4d8de;border-radius:8px;padding:8px;margin-top:6px}
+.version{font-size:11px;color:#b0b5bd;margin-left:10px;font-weight:400}
