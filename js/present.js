@@ -133,6 +133,9 @@ window.App = window.App || {};
   const item = x => typeof x === "string" ? `<li>${esc(x)}</li>`
     : `<li>${esc(x.txt)}${x.m ? ` <span style="color:var(--ink3)">(${esc(x.m)})</span>` : ""}</li>`;
 
+  const initiales = e => (String(e.prenom || "")[0] || "") + (String(e.nom || "")[0] || "");
+  const photoHTML = e => e.photo ? `<img class="photo" src="${e.photo}" alt="">` : `<div class="photo photo-vide">${esc(initiales(e).toUpperCase())}</div>`;
+  const logoCoin = meta => meta.logo ? `<img class="logo-coin" src="${meta.logo}" alt="Logo du lycée">` : "";
   const logoHTML = meta => meta.logo ? `<img class="logo" src="${meta.logo}" alt="Logo du lycée">` : `<div class="logo-vide">logo<br>du lycée</div>`;
   const titre = meta => `${meta.classe} · ${meta.periode} · ${meta.annee}`;
 
@@ -148,7 +151,7 @@ window.App = window.App || {};
       : `<div class="attente">${nAppr2 ? `${nAppr2} appréciation(s) saisie(s), synthèse à faire.` : "Pas encore saisies dans Pronote."}</div>`;
     stage.innerHTML = `
     <header>
-      <div class="ident">${logoHTML(meta)}${e.photo ? `<img class="photo" src="${e.photo}" alt="">` : ""}<div><div class="nom">${esc(e.prenom)} <small>${esc(e.nom)}</small></div><div class="sous">${esc(sous)}</div></div></div>
+      <div class="ident">${photoHTML(e)}<div><div class="nom">${esc(e.prenom)} <small>${esc(e.nom)}</small></div><div class="sous">${esc(sous)}</div></div></div>
       <div class="kpi">${evo}<div class="bloc"><div class="lab">moyenne T1</div><div class="val">${fr(e.gen)}</div></div>${e.genHO != null ? `<div class="bloc ho"><div class="lab">hors options,<br>sections et LVC</div><div class="v3">${fr(e.genHO)}</div><div class="cl">classe : ${fr(M.classe.moyHO)}</div></div>` : ""}</div>
     </header>
     <main>
@@ -168,6 +171,7 @@ window.App = window.App || {};
         <div class="bloc-d"><h3>Assiduité au 1er trimestre</h3>${assiduite(e)}</div>
       </section>
     </main>
+    ${logoCoin(meta)}
     <div class="nav">${pos}</div>`;
   };
 
